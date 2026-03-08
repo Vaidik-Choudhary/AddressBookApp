@@ -16,7 +16,9 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String firstName, String lastName, String address, String city, String state, String zip, String phoneNumber, String email) {
+    public Contact(String firstName, String lastName, String address,
+            String city, String state, String zip,
+            String phoneNumber, String email) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -103,12 +105,25 @@ public class Contact {
 
         Contact contact = (Contact) o;
 
-        return firstName.equals(contact.firstName) && lastName.equals(contact.lastName);
+        return firstName.equals(contact.firstName) &&
+                lastName.equals(contact.lastName);
     }
 
     @Override
     public int hashCode() {
 
         return Objects.hash(firstName, lastName);
+    }
+    
+    @Override
+    public String toString() {
+
+        return "Contact{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }
