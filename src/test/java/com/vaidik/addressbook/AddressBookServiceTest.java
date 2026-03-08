@@ -196,16 +196,7 @@ public class AddressBookServiceTest {
 
         AddressBookService service = new AddressBookService();
 
-        Contact original = new Contact(
-                "Vaidik",
-                "Choudhary",
-                "Arera Colony",
-                "Bhopal",
-                "MP",
-                "462001",
-                "919876543210",
-                "vaidik@example.com"
-        );
+        Contact original = createContact();
 
         service.addContact("personal", original);
 
@@ -270,16 +261,7 @@ public class AddressBookServiceTest {
 
         AddressBookService service = new AddressBookService();
 
-        Contact contact = new Contact(
-                "Vaidik",
-                "Choudhary",
-                "Arera Colony",
-                "Bhopal",
-                "MP",
-                "462001",
-                "919876543210",
-                "vaidik@example.com"
-        );
+        Contact contact = createContact();
 
         service.addContact("personal", contact);
 
@@ -318,5 +300,74 @@ public class AddressBookServiceTest {
         );
 
         assertFalse(result);
+    }
+
+    @Test
+    public void givenMultipleContacts_whenAdded_shouldStoreAllContacts2() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact c1 = createContact();
+
+        Contact c2 = new Contact(
+                "Ravi","Sharma","Market Road","Indore","MP",
+                "452001","8888888888","ravi@gmail.com");
+
+        service.addContact("personal", c1);
+        service.addContact("personal", c2);
+
+        assertEquals(2, service.getContacts("personal").size());
+    }
+
+    @Test
+    public void givenEmptyAddressBook_whenGetContacts_shouldReturnEmptyList() {
+
+        AddressBookService service = new AddressBookService();
+
+        assertEquals(0, service.getContacts("personal").size());
+    }
+
+    @Test
+    public void givenContactsInDifferentBooks_whenFetched_shouldRemainSeparate() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact c1 = new Contact("Vaidik","Choudhary","","","","","","");
+        Contact c2 = new Contact("Ravi","Sharma","","","","","","");
+
+        service.addContact("personal", c1);
+        service.addContact("office", c2);
+
+        assertEquals(1, service.getContacts("personal").size());
+        assertEquals(1, service.getContacts("office").size());
+    }
+
+    @Test
+    public void givenDuplicateContacts_whenAdded_shouldAllowDuplicates() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact c = new Contact("Vaidik","Choudhary","","","","","","");
+
+        service.addContact("personal", c);
+        service.addContact("personal", c);
+
+        assertEquals(2, service.getContacts("personal").size());
+    }
+
+    @Test
+    public void givenLargeNumberOfContacts_whenAdded_shouldHandleCorrectly() {
+
+        AddressBookService service = new AddressBookService();
+
+        for(int i=0;i<100;i++) {
+
+            Contact c = new Contact(
+                    "User"+i,"Test","","","","","","");
+
+            service.addContact("personal", c);
+        }
+
+        assertEquals(100, service.getContacts("personal").size());
     }
 }
