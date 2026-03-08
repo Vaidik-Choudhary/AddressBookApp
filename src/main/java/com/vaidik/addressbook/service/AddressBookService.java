@@ -2,6 +2,7 @@ package com.vaidik.addressbook.service;
 
 import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
+import com.vaidik.addressbook.util.CSVUtil;
 import com.vaidik.addressbook.util.FileUtil;
 
 import org.springframework.stereotype.Service;
@@ -236,10 +237,26 @@ public class AddressBookService {
 
         FileUtil.writeContactsToFile(filePath, book.getContacts());
     }
-
-
+    
     public List<Contact> loadContactsFromFile(String filePath) {
 
         return FileUtil.readContactsFromFile(filePath);
+    }
+    
+    public void saveContactsToCSV(String bookName, String filePath) {
+
+        AddressBook book = addressBooks.get(bookName);
+
+        if(book == null) {
+            return;
+        }
+
+        CSVUtil.writeContactsToCSV(filePath, book.getContacts());
+    }
+
+
+    public List<Contact> loadContactsFromCSV(String filePath) {
+
+        return CSVUtil.readContactsFromCSV(filePath);
     }
 }
