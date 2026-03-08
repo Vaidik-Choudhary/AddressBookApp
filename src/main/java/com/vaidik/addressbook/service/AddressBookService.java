@@ -4,6 +4,7 @@ import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
 import com.vaidik.addressbook.util.CSVUtil;
 import com.vaidik.addressbook.util.FileUtil;
+import com.vaidik.addressbook.util.JSONUtil;
 
 import org.springframework.stereotype.Service;
 
@@ -254,9 +255,24 @@ public class AddressBookService {
         CSVUtil.writeContactsToCSV(filePath, book.getContacts());
     }
 
-
     public List<Contact> loadContactsFromCSV(String filePath) {
 
         return CSVUtil.readContactsFromCSV(filePath);
+    }
+    
+    public void saveContactsToJSON(String bookName, String filePath) {
+
+        AddressBook book = addressBooks.get(bookName);
+
+        if(book == null) {
+            return;
+        }
+
+        JSONUtil.writeContactsToJSON(filePath, book.getContacts());
+    }
+
+    public List<Contact> loadContactsFromJSON(String filePath) {
+
+        return JSONUtil.readContactsFromJSON(filePath);
     }
 }
