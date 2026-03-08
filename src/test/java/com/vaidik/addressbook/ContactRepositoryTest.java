@@ -65,4 +65,23 @@ public class ContactRepositoryTest {
         assertNotNull(result);
         assertTrue(result.size() > 0);
     }
+    
+    @Test
+    public void givenContact_whenInserted_shouldReturnInsertedRows() {
+
+        Contact contact = new Contact(
+                "Test",
+                "User",
+                "",
+                "Pune",
+                "MH",
+                "411001",
+                "9999999999",
+                "test@gmail.com"
+        );
+
+        int rows = repository.addContact(contact);
+
+        assertTrue(rows > 0);
+    }
 }
