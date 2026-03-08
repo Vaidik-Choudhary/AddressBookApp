@@ -184,8 +184,84 @@ public class AddressBookServiceTest {
         service.addContact("family", c1);
         service.addContact("friends", c2);
 
-        assertEquals(1,service.getAddressBook("family").getContacts().size());
+        assertEquals(1,
+                service.getAddressBook("family").getContacts().size());
 
-        assertEquals(1,service.getAddressBook("friends").getContacts().size());
+        assertEquals(1,
+                service.getAddressBook("friends").getContacts().size());
+    }
+
+    @Test
+    public void givenExistingContact_whenUpdated_shouldReturnUpdatedContact() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact original = new Contact(
+                "Vaidik",
+                "Choudhary",
+                "Arera Colony",
+                "Bhopal",
+                "MP",
+                "462001",
+                "919876543210",
+                "vaidik@example.com"
+        );
+
+        service.addContact("personal", original);
+
+        Contact updated = new Contact(
+                "Vaidik",
+                "Choudhary",
+                "Future City",
+                "Indore",
+                "MP",
+                "462001",
+                "9999999999",
+                "vaidik@update.com"
+        );
+
+        Contact result = service.updateContact(
+                "personal",
+                "Vaidik",
+                "Choudhary",
+                updated
+        );
+
+        assertEquals("Indore", result.getCity());
+        assertEquals("9999999999", result.getPhoneNumber());
+    }
+
+    @Test
+    public void givenNonExistingContact_whenUpdate_shouldReturnNull() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact updated = new Contact();
+
+        Contact result = service.updateContact(
+                "personal",
+                "Unknown",
+                "Person",
+                updated
+        );
+
+        assertNull(result);
+    }
+
+    @Test
+    public void givenMissingAddressBook_whenUpdate_shouldReturnNull() {
+
+        AddressBookService service = new AddressBookService();
+
+        Contact updated = new Contact();
+
+        Contact result = service.updateContact(
+                "unknownBook",
+                "Vaidik",
+                "Choudhary",
+                updated
+        );
+
+        assertNull(result);
     }
 }
