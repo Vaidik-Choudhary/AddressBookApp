@@ -4,6 +4,7 @@ package com.vaidik.addressbook;
 import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
 import com.vaidik.addressbook.service.AddressBookService;
+import com.vaidik.addressbook.util.CSVUtil;
 import com.vaidik.addressbook.util.FileUtil;
 
 import org.junit.jupiter.api.*;
@@ -14,6 +15,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AddressBookServiceTest {
+
 
     private Contact createContact() {
 
@@ -909,5 +911,56 @@ public class AddressBookServiceTest {
         );
 
         assertEquals(2, result.size());
+    }
+    
+    @Test
+    public void givenContacts_whenSavedToCSV_shouldCreateCSVFile() {
+
+        AddressBookService service = new AddressBookService();
+
+        service.addContact("personal",
+                new Contact("Tarus","Prabhat","","Ariana","Geornite","567834","",""));
+
+        service.saveContactsToCSV("personal","src/test/resources/testdata/test_contacts.csv");
+
+        File file = new File("src/test/resources/testdata/test_contacts.csv");
+
+        assertTrue(file.exists());
+    }
+    
+    @Test
+    public void givenCSVFile_whenRead_shouldReturnContacts() {
+
+        CSVUtil.writeContactsToCSV(
+                "src/test/resources/testdata/test_contacts.csv",
+                List.of(new Contact("Tarus","Prabhat","","Ariana","Geornite","567834","",""))
+        );
+
+        List<Contact> contacts = CSVUtil.readContactsFromCSV("src/test/resources/testdata/test_contacts.csv");
+
+        assertEquals(1, contacts.size());
+    }
+    
+    @Test
+    public void givenMultipleContacts_whenSavedAndLoadedCSV_shouldMatchCount() {
+
+        List<Contact> contacts = List.of(
+                new Contact("Tarus","Prabhat","","Ariana","Geornite","567834","",""),
+                new Contact("Rahul","Verma","","Delhi","DL","110001","","")
+        );
+
+        CSVUtil.writeContactsToCSV("src/test/resources/testdata/multi_contacts.csv", contacts);
+
+        List<Contact> result = CSVUtil.readContactsFromCSV("src/test/resources/testdata/multi_contacts.csv");
+
+        assertEquals(2, result.size());
+    }
+    
+    @Test
+    public void givenEmptyCSV_whenRead_shouldReturnEmptyList() {
+
+        List<Contact> contacts = CSVUtil.readContactsFromCSV("src/test/resources/testdata/empty.csv");
+
+        assertEquals(0, contacts.size());
     }
 }
