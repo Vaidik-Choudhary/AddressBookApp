@@ -2,6 +2,11 @@ package com.vaidik.addressbook.service;
 
 import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
+import com.vaidik.addressbook.repository.ContactRepository;
+import com.vaidik.addressbook.storage.CSVStorage;
+import com.vaidik.addressbook.storage.ContactStorage;
+import com.vaidik.addressbook.storage.FileStorage;
+import com.vaidik.addressbook.storage.JSONStorage;
 import com.vaidik.addressbook.util.CSVUtil;
 import com.vaidik.addressbook.util.FileUtil;
 import com.vaidik.addressbook.util.JSONUtil;
@@ -15,7 +20,13 @@ import java.util.stream.Collectors;
 public class AddressBookService {
 
     private Map<String, AddressBook> addressBooks = new HashMap<>();
+    
+    private final ContactRepository repository;
 
+    public AddressBookService(ContactRepository repository) {
+        this.repository = repository;
+    }
+    
     public Contact addContact(String bookName, Contact contact) {
 
         AddressBook book = addressBooks.get(bookName);
@@ -236,12 +247,16 @@ public class AddressBookService {
             return;
         }
 
-        FileUtil.writeContactsToFile(filePath, book.getContacts());
+        ContactStorage storage = new FileStorage();
+
+        storage.save(filePath, book.getContacts());
     }
     
     public List<Contact> loadContactsFromFile(String filePath) {
 
-        return FileUtil.readContactsFromFile(filePath);
+        ContactStorage storage = new FileStorage();
+
+        return storage.load(filePath);
     }
     
     public void saveContactsToCSV(String bookName, String filePath) {
@@ -252,12 +267,16 @@ public class AddressBookService {
             return;
         }
 
-        CSVUtil.writeContactsToCSV(filePath, book.getContacts());
+        ContactStorage storage = new CSVStorage();
+
+        storage.save(filePath, book.getContacts());
     }
 
     public List<Contact> loadContactsFromCSV(String filePath) {
 
-        return CSVUtil.readContactsFromCSV(filePath);
+        ContactStorage storage = new CSVStorage();
+
+        return storage.load(filePath);
     }
     
     public void saveContactsToJSON(String bookName, String filePath) {
@@ -268,11 +287,20 @@ public class AddressBookService {
             return;
         }
 
-        JSONUtil.writeContactsToJSON(filePath, book.getContacts());
+        ContactStorage storage = new JSONStorage();
+
+        storage.save(filePath, book.getContacts());
     }
 
     public List<Contact> loadContactsFromJSON(String filePath) {
 
-        return JSONUtil.readContactsFromJSON(filePath);
+        ContactStorage storage = new JSONStorage();
+
+        return storage.load(filePath);
+    }
+
+    public List<Contact> getContactsFromDatabase() {
+
+        return repository.getAllContacts();
     }
 }
