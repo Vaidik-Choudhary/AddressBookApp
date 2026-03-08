@@ -1,5 +1,6 @@
 package com.vaidik.addressbook;
 
+import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
 import com.vaidik.addressbook.service.AddressBookService;
 import org.junit.jupiter.api.Test;
@@ -369,5 +370,67 @@ public class AddressBookServiceTest {
         }
 
         assertEquals(100, service.getContacts("personal").size());
+    }
+
+    @Test
+    public void givenNewBookName_whenCreated_shouldReturnAddressBook() {
+
+        AddressBookService service = new AddressBookService();
+
+        AddressBook book = service.createAddressBook("personal");
+
+        assertEquals("personal", book.getName());
+    }
+
+    @Test
+    public void givenDuplicateBookName_whenCreated_shouldReturnExistingBook() {
+
+        AddressBookService service = new AddressBookService();
+
+        AddressBook b1 = service.createAddressBook("personal");
+        AddressBook b2 = service.createAddressBook("personal");
+
+        assertEquals(b1, b2);
+    }
+
+    @Test
+    public void givenMultipleBooks_whenCreated_shouldStoreAll() {
+
+        AddressBookService service = new AddressBookService();
+
+        service.createAddressBook("personal");
+        service.createAddressBook("office");
+
+        assertEquals(2, service.getAllAddressBooks().size());
+    }
+
+    @Test
+    public void givenContactsInDifferentBooks_shouldRemainSeparate() {
+
+        AddressBookService service = new AddressBookService();
+
+        service.createAddressBook("personal");
+        service.createAddressBook("office");
+
+        Contact c1 = new Contact("Vaidik","Choudhary","","","","","","");
+        Contact c2 = new Contact("Ravi","Sharma","","","","","","");
+
+        service.addContact("personal", c1);
+        service.addContact("office", c2);
+
+        assertEquals(1, service.getContacts("personal").size());
+        assertEquals(1, service.getContacts("office").size());
+    }
+
+    @Test
+    public void givenBooksCreated_whenFetched_shouldReturnDictionary() {
+
+        AddressBookService service = new AddressBookService();
+
+        service.createAddressBook("personal");
+        service.createAddressBook("office");
+
+        assertTrue(service.getAllAddressBooks().containsKey("personal"));
+        assertTrue(service.getAllAddressBooks().containsKey("office"));
     }
 }
