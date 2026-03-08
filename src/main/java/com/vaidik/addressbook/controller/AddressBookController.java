@@ -1,5 +1,6 @@
 package com.vaidik.addressbook.controller;
 
+import com.vaidik.addressbook.model.AddressBook;
 import com.vaidik.addressbook.model.Contact;
 import com.vaidik.addressbook.service.AddressBookService;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +53,17 @@ public class AddressBookController {
     public List<Contact> getContacts(@PathVariable String bookName) {
 
         return service.getContacts(bookName);
+    }
+    
+    @PostMapping("/{name}")
+    public AddressBook createAddressBook(@PathVariable String name) {
+
+        return service.createAddressBook(name);
+    }
+    
+    @GetMapping
+    public Map<String, AddressBook> getAllAddressBooks() {
+
+        return service.getAllAddressBooks();
     }
 }
