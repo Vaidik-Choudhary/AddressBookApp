@@ -249,4 +249,16 @@ public class AddressBookController {
 
         return "Failed to add contact";
     }
+    
+    @PostMapping("/db/add-multiple")
+    public String addMultipleContacts(@RequestBody List<ContactDTO> dtos) {
+
+        List<Contact> contacts = dtos.stream()
+                .map(service::convertToModel)
+                .toList();
+
+        service.addMultipleContactsToDatabase(contacts);
+
+        return "Contacts added using multiple threads";
+    }
 }
